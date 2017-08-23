@@ -1,0 +1,67 @@
+{
+  "v": "4.0",
+  "name": "es-phoneshop-factory",
+  "workspace": {
+    "defaultEnv": "es-phoneshop-env",
+    "environments": {
+      "es-phoneshop-env": {
+        "machines": {
+          "dev-machine": {
+            "attributes": {
+              "memoryLimitBytes": "2147483648"
+            },
+            "servers": {},
+            "agents": [
+              "org.eclipse.che.exec",
+              "org.eclipse.che.ssh",
+              "org.eclipse.che.ws-agent",
+              "org.eclipse.che.terminal"
+            ]
+          }
+        },
+        "recipe": {
+          "location": "codenvy/ubuntu_jdk8",
+          "type": "dockerimage"
+        }
+      }
+    },
+    "projects": [
+      {
+        "links": [],
+        "name": "phoneshop",
+        "attributes": {
+          "languageVersion": [
+            "1.8"
+          ],
+          "language": [
+            "java"
+          ]
+        },
+        "type": "maven",
+        "source": {
+          "location": "https://github.com/andrewosipenko/phoneshop.git",
+          "type": "git",
+          "parameters": {
+            "branch": "3.1.0",
+            "keepVcs": "true"
+          }
+        },
+        "path": "/phoneshop",
+        "problems": [],
+        "mixins": [
+          "git"
+        ]
+      }
+    ],
+    "name": "es-phoneshop-workspace",
+    "commands": [],
+    "links": []
+  },
+  "id": "es-phoneshop-factory",
+  "creator": {
+    "name": "userid_xghjaxeb9sr00kpo",
+    "email": "dev7000@gmail.com",
+    "created": 1502962047505,
+    "userId": "userid_xghjaxeb9sr00kpo"
+  }
+}
