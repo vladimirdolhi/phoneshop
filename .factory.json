@@ -35,7 +35,9 @@
           ],
           "language": [
             "java"
-          ]
+          ],
+          "local_branch" : [ "candidate" ],
+          "contribute_to_branch" : [ "candidate" ]
         },
         "type": "maven",
         "source": {
@@ -49,7 +51,7 @@
         "path": "/phoneshop",
         "problems": [],
         "mixins": [
-          "git"
+          "git", "pullrequest"
         ]
       }
     ],
@@ -57,7 +59,10 @@
     "commands": [],
     "links": []
   },
-  "id": "es-phoneshop-factory",
+  "id": "es-phoneshop-f",
+  "policies": {
+    "create": "perUser"
+  },
   "creator": {
     "name": "userid_xghjaxeb9sr00kpo",
     "email": "dev7000@gmail.com",
