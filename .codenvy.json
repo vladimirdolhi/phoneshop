@@ -8,7 +8,7 @@
         "machines": {
           "dev-machine": {
             "attributes": {
-              "memoryLimitBytes": "2147483648"
+              "memoryLimitBytes": "1147483648"
             },
             "servers": {},
             "agents": [
@@ -41,7 +41,7 @@
         },
         "type": "maven",
         "source": {
-          "location": "https://github.com/andrewosipenko/phoneshop.git",
+          "location": "https://github.com/che-samples/blank",
           "type": "git",
           "parameters": {
             "branch": "master",
