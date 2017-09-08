@@ -10,7 +10,7 @@
             "limits":{
               "ram":1000
             },
-            "name":"dev-machine",
+            "name":"ws-machine",
             "type":"docker",
             "source":{
               "content":"FROM codenvy/debian_jdk8\nEXPOSE 9966",
@@ -65,7 +65,7 @@
             "https://github.com/andrewosipenko/phoneshop"
           ],
           "maven.groupId":[
-            "org.springframework.samples"
+            "com.es"
           ],
           "containsJavaFiles":[
             "true"
