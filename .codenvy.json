@@ -155,10 +155,9 @@
           "properties":{
             "name":"build and run"
   },
-  "creator": {
-    "name": "userid_xghjaxeb9sr00kpo",
-    "email": "dev7000@gmail.com",
-    "created": 1502962047505,
-    "userId": "userid_xghjaxeb9sr00kpo"
+          "id":"runCommand"
+        }
+      ]
+    }
   }
 }
