@@ -8,6 +8,7 @@
   <name>Phoneshop Spring MVC training</name>
   <modules>
     <module>core</module>
+    <module>demodata</module>
     <module>web</module>
   </modules>
   <properties>
