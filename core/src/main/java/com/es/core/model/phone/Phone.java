@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.Set;
 
 public class Phone {
-    private Long key;
+    private Long id;
     private String brand;
     private String model;
     private BigDecimal price;
@@ -161,14 +161,6 @@ public class Phone {
         this.ramGb = ramGb;
     }
 
-    public Long getKey() {
-        return key;
-    }
-
-    public void setKey(final Long key) {
-        this.key = key;
-    }
-
     public String getModel() {
         return model;
     }
@@ -271,5 +263,13 @@ public class Phone {
 
     public void setHeightMm(BigDecimal heightMm) {
         this.heightMm = heightMm;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

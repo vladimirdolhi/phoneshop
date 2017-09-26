@@ -1,13 +1,12 @@
 package com.es.core.model.phone;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import javax.annotation.Resource;
-
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import java.util.List;
+import java.util.Optional;
 
 @Component
 public class JdbcPhoneDao implements PhoneDao{
@@ -23,6 +22,6 @@ public class JdbcPhoneDao implements PhoneDao{
     }
 
     public List<Phone> findAll() {
-        return Arrays.asList(new Phone(), new Phone());
+        return jdbcTemplate.query("select * from phones", new BeanPropertyRowMapper(Phone.class));
     }
 }
