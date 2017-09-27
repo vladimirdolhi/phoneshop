@@ -17,7 +17,7 @@ public class ProductListPageController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String showProductList(Model model) {
-        model.addAttribute("phones", phoneDao.findAll());
+        model.addAttribute("phones", phoneDao.findAll(0, 10));
         return "productList";
     }
 }

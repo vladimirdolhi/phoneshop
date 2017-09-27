@@ -21,7 +21,7 @@ public class JdbcPhoneDao implements PhoneDao{
         throw new UnsupportedOperationException("TODO");
     }
 
-    public List<Phone> findAll() {
-        return jdbcTemplate.query("select * from phones", new BeanPropertyRowMapper(Phone.class));
+    public List<Phone> findAll(int offset, int limit) {
+        return jdbcTemplate.query("select * from phones offset " + offset + " limit " + limit, new BeanPropertyRowMapper(Phone.class));
     }
 }
