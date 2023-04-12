@@ -28,7 +28,7 @@ public class JdbcPhoneDao implements PhoneDao{
             " weightGr, lengthMm, widthMm, heightMm, announced, deviceType, os, displayResolution, pixelDensity, " +
             "displayTechnology, backCameraMegapixels, frontCameraMegapixels, ramGb, internalStorageGb," +
             " batteryCapacityMah, talkTimeHours, standByTimeHours, bluetooth, positioning, imageUrl," +
-            " description) values(?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            " description) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private final static String INSERT_INTO_PHONE_COLOR = "insert into phone2color (phoneId, colorId) values (?, ?)";
 
@@ -52,7 +52,9 @@ public class JdbcPhoneDao implements PhoneDao{
                 phone.getHeightMm(), phone.getAnnounced(), phone.getDeviceType(), phone.getOs(), phone.getDisplayResolution(),
                 phone.getPixelDensity(), phone.getDisplayTechnology(), phone.getBackCameraMegapixels(), phone.getFrontCameraMegapixels(),
                 phone.getRamGb(), phone.getInternalStorageGb(), phone.getBatteryCapacityMah(), phone.getTalkTimeHours(),
-                phone.getStandByTimeHours(), phone.getBluetooth(), phone.getPositioning(), phone.getImageUrl());
+                phone.getStandByTimeHours(), phone.getBluetooth(), phone.getPositioning(), phone.getImageUrl(),
+                phone.getDescription()
+        );
 
         ArrayList<Color> colors = new ArrayList<>(phone.getColors());
         jdbcTemplate.batchUpdate(INSERT_INTO_PHONE_COLOR,
