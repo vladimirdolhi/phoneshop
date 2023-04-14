@@ -54,7 +54,7 @@ public class JdbcPhoneDaoIntTest {
     }
 
     @Test
-    public void testSetColors() {
+    public void testSavePhoneWithColors() {
         phoneDao.save(PHONE_4);
         Phone addedPhone = phoneDao.get(PHONE_4.getId()).get();
         assertEquals(PHONE_4.getColors(), addedPhone.getColors());

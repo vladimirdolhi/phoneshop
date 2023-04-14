@@ -1,7 +1,6 @@
 package com.es.core.model.phone;
 
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -11,8 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+
 
 @Component
 public class JdbcPhoneDao implements PhoneDao{
@@ -20,9 +18,16 @@ public class JdbcPhoneDao implements PhoneDao{
     private final String SELECT_PHONES_WITH_OFFSET_AND_LIMIT = "select * from phones offset ? limit ?";
     private final String SELECT_PHONE_BY_ID = "select * from phones where id = ?";
 
-    private final static String SELECT_COLOR_BY_ID = "select * from colors where id = ?";
+    private final String SELECT_PHONE_WITH_CLR_BY_ID = "select phone.*, colors.id as colorId, colors.code as colorCode from " +
+            "(" + SELECT_PHONE_BY_ID + ") as phone left join phone2color " +
+            "on phone.id = phone2color.phoneId" +
+            " left join colors on phone2color.colorId = colors.id";;
 
-    private final static String SELECT_COLOR_IDS_BY_PHONE_ID = "select colorId from phone2color where phoneId = ?";
+    private final String SELECT_PHONES_WITH_CLR_WITH_OFFSET_AND_LIMIT =
+            "select phones.*, colors.id as colorId, colors.code as colorCode from " +
+                    "(" + SELECT_PHONES_WITH_OFFSET_AND_LIMIT + ") as phones left join phone2color " +
+                    "on phones.id = phone2color.phoneId" +
+                    " left join colors on phone2color.colorId = colors.id";
 
     private final static String INSERT_PHONES = "insert into phones (id, brand, model, price, displaySizeInches," +
             " weightGr, lengthMm, widthMm, heightMm, announced, deviceType, os, displayResolution, pixelDensity, " +
@@ -36,13 +41,9 @@ public class JdbcPhoneDao implements PhoneDao{
     private JdbcTemplate jdbcTemplate;
 
     public Optional<Phone> get(final Long key) {
-        Optional<Phone> phone = jdbcTemplate.query(SELECT_PHONE_BY_ID, new Object[] {key},
-                        new BeanPropertyRowMapper(Phone.class))
+        return jdbcTemplate.query(SELECT_PHONE_WITH_CLR_BY_ID, new Object[]{key},
+                        new PhoneResultSetExtractor())
                 .stream().findAny();
-
-        phone.ifPresent(this::setColors);
-
-        return phone;
 
     }
 
@@ -75,22 +76,8 @@ public class JdbcPhoneDao implements PhoneDao{
     }
 
     public List<Phone> findAll(int offset, int limit) {
-        List<Phone> phones =  jdbcTemplate.query(SELECT_PHONES_WITH_OFFSET_AND_LIMIT, new Object[] {offset, limit},
-                new BeanPropertyRowMapper(Phone.class));
-
-        phones.forEach(this::setColors);
-
-        return phones;
+        return jdbcTemplate.query(SELECT_PHONES_WITH_CLR_WITH_OFFSET_AND_LIMIT, new Object[]{offset, limit},
+                new PhoneResultSetExtractor());
     }
 
-    private void setColors(Phone phone){
-        List<Long> colorsIds = jdbcTemplate.queryForList(SELECT_COLOR_IDS_BY_PHONE_ID, Long.class,
-                phone.getId());
-
-        Set<Color> colors = colorsIds.stream()
-                .map(id -> jdbcTemplate.queryForObject(SELECT_COLOR_BY_ID, new Object[]{id},
-                        new BeanPropertyRowMapper<>(Color.class))).collect(Collectors.toSet());
-
-        phone.setColors(colors);
-    }
 }
