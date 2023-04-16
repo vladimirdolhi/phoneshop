@@ -8,6 +8,7 @@
                            http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
 
     <context:component-scan base-package="com.es.core" />
+    <context:property-placeholder location="/conf/test-application.properties"/>
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="${db.driver}" />
@@ -22,5 +23,9 @@
 
     <jdbc:initialize-database enabled="${db.insertSchema}" data-source="dataSource">
         <jdbc:script location="classpath:db/schema.sql" />
+    </jdbc:initialize-database>
+
+    <jdbc:initialize-database enabled="${db.insertDemodata}" data-source="dataSource">
+        <jdbc:script location="classpath:db/test-demodata-phones.sql" />
     </jdbc:initialize-database>
 </beans>
