@@ -13,21 +13,33 @@ import java.util.Optional;
 
 
 @Component
-public class JdbcPhoneDao implements PhoneDao{
+public class JdbcPhoneDao implements PhoneDao {
 
     private final String SELECT_PHONES_WITH_OFFSET_AND_LIMIT = "select * from phones offset ? limit ?";
+
+    private final String SELECT_ALL_PHONES = "select * from phones ";
+
+    private final String AVAILABLE_ONLY_QUERY = "join stocks on phones.id = stocks.phoneId " +
+            "where (stocks.stock > stocks.reserved " +
+            "and phones.price is not null) ";
+    private final String SEARCH_QUERY = "concat(phones.brand, phones.model) ilike '%%%s%%' ";
+    private final String SORT_QUERY = "order by ? ";
+    private final String OFFSET_AND_LIMIT_QUERY = "offset ? limit ? ";
+
+    private final String NESTED_QUERY_STR = "NESTED_QUERY";
+
+    private final String SELECT_PHONES_WITH_CLR =
+            "select phones.*, colors.id as colorId, colors.code as colorCode from " +
+                    "( " + NESTED_QUERY_STR + " ) as phones left join phone2color " +
+                    "on phones.id = phone2color.phoneId" +
+                    " left join colors on phone2color.colorId = colors.id";
+
     private final String SELECT_PHONE_BY_ID = "select * from phones where id = ?";
 
     private final String SELECT_PHONE_WITH_CLR_BY_ID = "select phone.*, colors.id as colorId, colors.code as colorCode from " +
             "(" + SELECT_PHONE_BY_ID + ") as phone left join phone2color " +
             "on phone.id = phone2color.phoneId" +
-            " left join colors on phone2color.colorId = colors.id";;
-
-    private final String SELECT_PHONES_WITH_CLR_WITH_OFFSET_AND_LIMIT =
-            "select phones.*, colors.id as colorId, colors.code as colorCode from " +
-                    "(" + SELECT_PHONES_WITH_OFFSET_AND_LIMIT + ") as phones left join phone2color " +
-                    "on phones.id = phone2color.phoneId" +
-                    " left join colors on phone2color.colorId = colors.id";
+            " left join colors on phone2color.colorId = colors.id";
 
     private final static String INSERT_PHONES = "insert into phones (id, brand, model, price, displaySizeInches," +
             " weightGr, lengthMm, widthMm, heightMm, announced, deviceType, os, displayResolution, pixelDensity, " +
@@ -75,9 +87,36 @@ public class JdbcPhoneDao implements PhoneDao{
         );
     }
 
-    public List<Phone> findAll(int offset, int limit) {
-        return jdbcTemplate.query(SELECT_PHONES_WITH_CLR_WITH_OFFSET_AND_LIMIT, new Object[]{offset, limit},
+    @Override
+    public List<Phone> findAll(String searchQuery, SortField sortField, SortOrder sortOrder,
+                               boolean availability, int offset, int limit) {
+
+        String query = buildQuery(searchQuery, sortField, sortOrder, availability);
+
+        return jdbcTemplate.query(query,  new Object[]{offset, limit},
                 new PhoneResultSetExtractor());
+    }
+
+    private String buildQuery(String query, SortField sortField, SortOrder sortOrder, boolean availability) {
+        StringBuilder nestedQuery = new StringBuilder(SELECT_ALL_PHONES);
+
+        if (availability) {
+            nestedQuery.append(AVAILABLE_ONLY_QUERY).append("and ");
+        } else {
+            nestedQuery.append("where ");
+        }
+
+        nestedQuery.append(SEARCH_QUERY);
+
+        if (sortField != null && sortOrder != null) {
+            nestedQuery.append(SORT_QUERY.replace("?", sortField.name()));
+            nestedQuery.append(sortOrder.name() + " ");
+        }
+
+        nestedQuery.append(OFFSET_AND_LIMIT_QUERY);
+
+        return String.format(SELECT_PHONES_WITH_CLR.replace(NESTED_QUERY_STR, nestedQuery.toString()),
+                query.trim().toLowerCase());
     }
 
 }
