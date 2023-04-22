@@ -1,6 +1,7 @@
 package com.es.core.model.phone;
 
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -48,6 +49,8 @@ public class JdbcPhoneDao implements PhoneDao {
             " description) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private final static String INSERT_INTO_PHONE_COLOR = "insert into phone2color (phoneId, colorId) values (?, ?)";
+
+    private final String SELECT_STOCK_BY_PHONE_ID = "select * from stocks where phoneId = ?";
 
     @Resource
     private JdbcTemplate jdbcTemplate;
@@ -97,6 +100,12 @@ public class JdbcPhoneDao implements PhoneDao {
                 new PhoneResultSetExtractor());
     }
 
+    @Override
+    public Stock getStock(Long id) {
+        return jdbcTemplate.queryForObject(SELECT_STOCK_BY_PHONE_ID,  new Object[]{id},
+                new BeanPropertyRowMapper<>(Stock.class));
+    }
+
     private String buildQuery(String query, SortField sortField, SortOrder sortOrder, boolean availability) {
         StringBuilder nestedQuery = new StringBuilder(SELECT_ALL_PHONES);
 
@@ -114,6 +123,8 @@ public class JdbcPhoneDao implements PhoneDao {
         }
 
         nestedQuery.append(OFFSET_AND_LIMIT_QUERY);
+
+        if (query == null) query = "";
 
         return String.format(SELECT_PHONES_WITH_CLR.replace(NESTED_QUERY_STR, nestedQuery.toString()),
                 query.trim().toLowerCase());
