@@ -23,12 +23,22 @@ public class ProductListPageController {
     @Resource
     private CartService cartService;
 
+    private final int PRODUCTS_PER_PAGE = 20;
+
     @RequestMapping(method = RequestMethod.GET)
     public String showProductList(Model model,
+                                  @RequestParam(defaultValue = "1") int pageNumber,
                                   @RequestParam(required = false) String query,
                                   @RequestParam(required = false) SortField sort,
                                   @RequestParam(required = false) SortOrder order) {
-        model.addAttribute("phones", phoneService.findAll(query, sort, order, true,0, 100));
+
+
+        model.addAttribute("phones", phoneService.findAll(query, sort, order, true,
+                PRODUCTS_PER_PAGE * (pageNumber - 1), PRODUCTS_PER_PAGE));
+
+        int pagesTotal = (int) Math.ceil(phoneService.count(query, sort, order, true,-1, -1) / (float) PRODUCTS_PER_PAGE);
+        model.addAttribute("pageNumber", pageNumber);
+        model.addAttribute("count", pagesTotal);
         model.addAttribute("cart", cartService.getCart());
 
         return "productList";

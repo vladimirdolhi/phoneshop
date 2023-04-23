@@ -34,4 +34,10 @@ public class PhoneServiceImpl implements PhoneService {
     public Stock getStock(Long id) {
         return phoneDao.getStock(id);
     }
+
+    @Override
+    public Integer count(String query, SortField sortField, SortOrder sortOrder,
+                         boolean availability, int offset, int limit) {
+        return phoneDao.count(query, availability);
+    }
 }

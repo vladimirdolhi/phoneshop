@@ -52,6 +52,8 @@ public class JdbcPhoneDao implements PhoneDao {
 
     private final String SELECT_STOCK_BY_PHONE_ID = "select * from stocks where phoneId = ?";
 
+    private final String COUNT_QUERY = "select count(1) from  ( " + NESTED_QUERY_STR + " )";
+
     @Resource
     private JdbcTemplate jdbcTemplate;
 
@@ -94,8 +96,8 @@ public class JdbcPhoneDao implements PhoneDao {
     public List<Phone> findAll(String searchQuery, SortField sortField, SortOrder sortOrder,
                                boolean availability, int offset, int limit) {
 
-        String query = buildQuery(searchQuery, sortField, sortOrder, availability);
-
+        String query = buildQuery(searchQuery, sortField, sortOrder, availability, offset, limit);
+        System.out.println("find " + query);
         return jdbcTemplate.query(query,  new Object[]{offset, limit},
                 new PhoneResultSetExtractor());
     }
@@ -106,7 +108,19 @@ public class JdbcPhoneDao implements PhoneDao {
                 new BeanPropertyRowMapper<>(Stock.class));
     }
 
-    private String buildQuery(String query, SortField sortField, SortOrder sortOrder, boolean availability) {
+    @Override
+    public Integer count(String searchQuery, boolean availability) {
+
+        String query = buildQueryForCount(searchQuery, availability, -1, -1);
+
+        System.out.println("count " + query);
+
+        return jdbcTemplate.queryForObject( query,
+                Integer.class);
+    }
+
+    private String buildQuery(String query, SortField sortField, SortOrder sortOrder,
+                              boolean availability, int offset, int limit) {
         StringBuilder nestedQuery = new StringBuilder(SELECT_ALL_PHONES);
 
         if (availability) {
@@ -122,11 +136,31 @@ public class JdbcPhoneDao implements PhoneDao {
             nestedQuery.append(sortOrder.name() + " ");
         }
 
-        nestedQuery.append(OFFSET_AND_LIMIT_QUERY);
+        if (offset >= 0 && limit >= 0) nestedQuery.append(OFFSET_AND_LIMIT_QUERY);
 
         if (query == null) query = "";
 
         return String.format(SELECT_PHONES_WITH_CLR.replace(NESTED_QUERY_STR, nestedQuery.toString()),
+                query.trim().toLowerCase());
+    }
+
+    private String buildQueryForCount(String query,
+                              boolean availability, int offset, int limit) {
+        StringBuilder nestedQuery = new StringBuilder(SELECT_ALL_PHONES);
+
+        if (availability) {
+            nestedQuery.append(AVAILABLE_ONLY_QUERY).append("and ");
+        } else {
+            nestedQuery.append("where ");
+        }
+
+        nestedQuery.append(SEARCH_QUERY);
+
+        if (offset >= 0 && limit >= 0) nestedQuery.append(OFFSET_AND_LIMIT_QUERY);
+
+        if (query == null) query = "";
+
+        return String.format(COUNT_QUERY.replace(NESTED_QUERY_STR, nestedQuery.toString()),
                 query.trim().toLowerCase());
     }
 

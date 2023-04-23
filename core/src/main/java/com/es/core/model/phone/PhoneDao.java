@@ -9,4 +9,6 @@ public interface PhoneDao {
     List<Phone> findAll(String query, SortField sortField, SortOrder sortOrder,
                         boolean availability, int offset, int limit);
     Stock getStock(Long id);
+
+    Integer count(String query, boolean availability);
 }

@@ -64,5 +64,6 @@
             </tr>
         </c:forEach>
     </table>
+    <tags:pagination pageNumber="${pageNumber}" totalPageCount="${count}"></tags:pagination>
    <body/>
 </tags:master>
