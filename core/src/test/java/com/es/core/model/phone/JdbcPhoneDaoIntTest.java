@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
 public class JdbcPhoneDaoIntTest {
 
     @Resource
-    PhoneDao phoneDao;
+    private PhoneDao phoneDao;
 
     public static final Phone PHONE_1 = Phone.builder().id(1L).brand("Google").model("Pixel 7 pro").
             price(BigDecimal.valueOf(1000)).colors(new HashSet<>(Arrays.asList(new Color(1000L, "Black"),

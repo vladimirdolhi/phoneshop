@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Service
-public class ResponseErrorValidator {
+public class ResponseErrorUtil {
 
     public ResponseEntity<Object> mapValidationService(BindingResult result) {
         if (result.hasErrors()) {
@@ -31,7 +31,7 @@ public class ResponseErrorValidator {
             }
 
             StringBuilder msg = new StringBuilder();
-            errorMap.entrySet().stream().map(Map.Entry::getValue).
+            errorMap.values().stream().
                     filter(Objects::nonNull).distinct().forEach(v -> msg.append(v).append("\n"));
             return new ResponseEntity<>(new InvalidRequestException(msg.toString()), HttpStatus.BAD_REQUEST);
         }

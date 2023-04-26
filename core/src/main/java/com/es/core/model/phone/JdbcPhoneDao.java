@@ -132,7 +132,11 @@ public class JdbcPhoneDao implements PhoneDao {
         nestedQuery.append(SEARCH_QUERY);
 
         if (sortField != null && sortOrder != null) {
-            nestedQuery.append(SORT_QUERY.replace("?", sortField.name()));
+            if (sortField == SortField.BRAND || sortField == SortField.MODEL){
+                nestedQuery.append(SORT_QUERY.replace("?", "lower( " + sortField.name() + ") "));
+            } else {
+                nestedQuery.append(SORT_QUERY.replace("?", sortField.name()));
+            }
             nestedQuery.append(sortOrder.name() + " ");
         }
 
