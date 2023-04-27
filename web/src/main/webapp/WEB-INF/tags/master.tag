@@ -20,9 +20,7 @@
 
   <header>
     <nav class="navbar navbar-light bg-light">
-      <a class="navbar-brand logo">
-        Phonify
-      </a>
+      <h1 class="display-4">Phonify</h1>
       <form class="form-inline my-2 my-lg-0" action="${pageContext.request.contextPath}/cart">
         <button class="btn btn-outline-info my-2 my-sm-0" type="submit" id="minicart">
           <span id = "totalQuantity">Cart: ${cart.totalQuantity} items</span>

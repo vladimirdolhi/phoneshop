@@ -54,6 +54,7 @@ public class PhoneResultSetExtractor implements ResultSetExtractor<List<Phone>> 
                 internalStorageGb(resultSet.getBigDecimal("internalStorageGb")).
                 batteryCapacityMah(resultSet.getInt("batteryCapacityMah")).
                 talkTimeHours(resultSet.getBigDecimal("talkTimeHours")).
+                standByTimeHours(resultSet.getBigDecimal("standByTimeHours")).
                 bluetooth(resultSet.getString("bluetooth")).
                 positioning(resultSet.getString("positioning")).
                 imageUrl(resultSet.getString("imageUrl")).
