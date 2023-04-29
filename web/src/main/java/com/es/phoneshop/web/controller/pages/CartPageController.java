@@ -1,11 +1,24 @@
 package com.es.phoneshop.web.controller.pages;
 
+import com.es.core.model.cart.Cart;
 import com.es.core.service.CartService;
+import com.es.phoneshop.web.dto.CartDto;
+import com.es.phoneshop.web.dto.CartItemDto;
+import com.es.phoneshop.web.util.validation.UpdateCartDtoValidator;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(value = "/cart")
@@ -13,12 +26,44 @@ public class CartPageController {
     @Resource
     private CartService cartService;
 
+    @Resource
+    private UpdateCartDtoValidator updateCartDtoValidator;
+
     @RequestMapping(method = RequestMethod.GET)
-    public void getCart() {
+    public String getCart(Model model) {
+        Cart cart = cartService.getCart();
+        model.addAttribute("cart", cart);
+        model.addAttribute("cartItems", cart.getItems());
+        model.addAttribute("cartDto", convertToCartDto(cart));
+        return "cart";
     }
 
-    @RequestMapping(method = RequestMethod.PUT)
-    public void updateCart() {
-        cartService.update(null);
+    @PostMapping("/update")
+    public String updateCart(CartDto cartDto, BindingResult bindingResult,
+                             RedirectAttributes redirectAttributes) {
+        updateCartDtoValidator.validate(cartDto, bindingResult);
+        Map<Long, Long> items = new HashMap<>(cartDto.getItems().stream()
+                .collect(Collectors.toMap(CartItemDto::getPhoneId,
+                        CartItemDto::getQuantity)));
+        cartService.update(items);
+
+        if(bindingResult.hasErrors()){
+            Map<String, String> errors = bindingResult.getFieldErrors().stream()
+                    .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+            redirectAttributes.addFlashAttribute("errors", errors);
+        }
+
+        return "redirect:/cart";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String updateCart(@PathVariable Long id) {
+        cartService.remove(id);
+        return "redirect:/cart";
+    }
+
+    private CartDto convertToCartDto(Cart cart) {
+        return new CartDto(cart.getItems().stream().map(item -> new CartItemDto(item.getPhone().getId(),
+                item.getQuantity())).collect(Collectors.toList()));
     }
 }

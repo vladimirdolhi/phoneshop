@@ -53,12 +53,29 @@ public class HttpSessionCartService implements CartService {
 
     @Override
     public void update(Map<Long, Long> items) {
-        throw new UnsupportedOperationException("TODO");
+        for (Map.Entry<Long, Long> entry : items.entrySet()) {
+            Long id = entry.getKey();
+            Long quantity = entry.getValue();
+            Stock stock = phoneService.getStock(entry.getKey());
+            if (quantity > (stock.getStock() - stock.getReserved())){
+                throw new OutOfStockException("Requested quantity: " + quantity +
+                        ", available: " + (stock.getStock() - stock.getReserved()));
+            }
+
+            Optional<CartItem> cartItemForUpdate = cart.getItems().stream().
+                        filter(item -> item.getPhone().getId().equals(id)).findAny();
+
+            cartItemForUpdate.ifPresent(cartItem -> cartItem.setQuantity(quantity));
+
+            recalculateCart();
+        }
     }
 
     @Override
     public void remove(Long phoneId) {
-        throw new UnsupportedOperationException("TODO");
+        cart.getItems().removeIf(item ->
+                phoneId.equals(item.getPhone().getId()));
+        recalculateCart();
     }
 
     private Optional<CartItem> getCartItem(Long id){
