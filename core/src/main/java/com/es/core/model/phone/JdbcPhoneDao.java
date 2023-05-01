@@ -97,7 +97,7 @@ public class JdbcPhoneDao implements PhoneDao {
                                boolean availability, int offset, int limit) {
 
         String query = buildQuery(searchQuery, sortField, sortOrder, availability, offset, limit);
-        System.out.println("find " + query);
+
         return jdbcTemplate.query(query,  new Object[]{offset, limit},
                 new PhoneResultSetExtractor());
     }
@@ -112,8 +112,6 @@ public class JdbcPhoneDao implements PhoneDao {
     public Integer count(String searchQuery, boolean availability) {
 
         String query = buildQueryForCount(searchQuery, availability, -1, -1);
-
-        System.out.println("count " + query);
 
         return jdbcTemplate.queryForObject( query,
                 Integer.class);

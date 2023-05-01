@@ -33,7 +33,6 @@ public class CartPageController {
     public String getCart(Model model) {
         Cart cart = cartService.getCart();
         model.addAttribute("cart", cart);
-        model.addAttribute("cartItems", cart.getItems());
         model.addAttribute("cartDto", convertToCartDto(cart));
         return "cart";
     }
