@@ -45,7 +45,10 @@
                     <img src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${phone.imageUrl}">
                 </td>
                 <td>${phone.brand}</td>
-                <td>${phone.model}</td>
+                <td>
+                    <a href="${pageContext.servletContext.contextPath}/products/${phone.id}">
+                        ${phone.model}
+                </td>
                 <td>
                     <c:forEach var="color" items="${phone.colors}">
                         ${color.code}

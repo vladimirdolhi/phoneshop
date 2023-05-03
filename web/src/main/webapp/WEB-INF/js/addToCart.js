@@ -7,7 +7,7 @@ function doAjaxAddToCart(id){
                     'Content-Type': 'application/json'
                 },
                 type: "POST",
-                url: "ajaxCart/",
+                url: "${pageContext.request.contextPath}/ajaxCart/",
                 dataType: "json",
                 data: JSON.stringify({
                     phoneId: id,
