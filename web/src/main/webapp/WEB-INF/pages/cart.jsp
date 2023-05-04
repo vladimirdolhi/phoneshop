@@ -70,6 +70,10 @@
             <p>
                 <button type="submit" form="updateForm" class="btn btn-success mt-2">Update</button>
             </p>
+
+            <a href="${pageContext.request.contextPath}/order">
+                <input type="button" class="btn btn-outline-primary" value="Place order">
+            </a>
         </c:if>
 
         <c:if test="${cart.items.size() == 0}">
