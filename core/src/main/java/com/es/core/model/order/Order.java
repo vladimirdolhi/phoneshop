@@ -3,7 +3,9 @@ package com.es.core.model.order;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -12,21 +14,18 @@ import java.util.List;
 public class Order
 {
     private Long id;
+    private UUID secureId;
     private List<OrderItem> orderItems;
-    /**
-     *  A sum of order item prices;
-     */
     private BigDecimal subtotal;
     private BigDecimal deliveryPrice;
-    /**
-     * <code>subtotal</code> + <code>deliveryPrice</code>
-     */
     private BigDecimal totalPrice;
+    private Timestamp creationDate;
 
     private String firstName;
     private String lastName;
     private String deliveryAddress;
     private String contactPhoneNo;
+    private String additionalInfo;
 
     private OrderStatus status;
 

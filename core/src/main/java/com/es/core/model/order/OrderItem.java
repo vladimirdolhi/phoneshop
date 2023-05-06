@@ -9,6 +9,5 @@ import lombok.*;
 public class OrderItem {
     private Long id;
     private Phone phone;
-    private Order order;
     private Long quantity;
 }
