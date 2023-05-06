@@ -16,7 +16,7 @@ import java.util.UUID;
 @Component
 public class JdbcOrderDao implements OrderDao {
 
-    private static final String FIND_ORDER_BY_ID = "select * from orders where id = ?";
+    private static final String FIND_ORDER_BY_ID = "select * from orders where secureId = ?";
 
     private static final String FIND_ORDER_ITEMS_BY_ORDER_ID = "select * from orders_items where orderId = ?";
 

@@ -3,7 +3,7 @@ package com.es.core.model.order;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,7 +19,7 @@ public class Order
     private BigDecimal subtotal;
     private BigDecimal deliveryPrice;
     private BigDecimal totalPrice;
-    private Timestamp creationDate;
+    private LocalDateTime creationDate;
 
     private String firstName;
     private String lastName;
