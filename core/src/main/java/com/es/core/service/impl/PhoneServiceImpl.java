@@ -36,6 +36,11 @@ public class PhoneServiceImpl implements PhoneService {
     }
 
     @Override
+    public void updateStock(Stock stock) {
+        phoneDao.updateStock(stock);
+    }
+
+    @Override
     public Integer count(String query, SortField sortField, SortOrder sortOrder,
                          boolean availability, int offset, int limit) {
         return phoneDao.count(query, availability);

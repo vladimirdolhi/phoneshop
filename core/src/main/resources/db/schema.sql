@@ -65,7 +65,7 @@ create table orders (
   creationDay TIMESTAMP NOT NULL,
   firstName VARCHAR(50) NOT NULL,
   lastName VARCHAR(50) NOT NULL,
-  deliveryAddress VARCHAR(50) NOT NULL,
+  deliveryAddress VARCHAR(100) NOT NULL,
   contactPhoneNo VARCHAR(50) NOT NULL,
   status VARCHAR(20) NOT NULL,
   additionalInfo VARCHAR(300)

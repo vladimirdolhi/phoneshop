@@ -32,6 +32,7 @@ public class OrderResultSetExtractor implements ResultSetExtractor<Order> {
                 lastName(resultSet.getString("lastName")).
                 deliveryAddress(resultSet.getString("deliveryAddress")).
                 contactPhoneNo(resultSet.getString("contactPhoneNo")).
+                additionalInfo(resultSet.getString("additionalInfo")).
                 status(OrderStatus.valueOf(resultSet.getString("status"))).
                 build();
     }

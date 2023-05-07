@@ -18,6 +18,8 @@ public interface PhoneService {
 
     Stock getStock(Long id);
 
+    void updateStock(Stock stock);
+
     Integer count(String query, SortField sortField, SortOrder sortOrder,
                   boolean availability, int offset, int limit);
 

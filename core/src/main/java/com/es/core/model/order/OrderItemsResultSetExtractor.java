@@ -17,7 +17,7 @@ public class OrderItemsResultSetExtractor implements ResultSetExtractor<List<Ord
 
         List<OrderItem> orderItems = new ArrayList<>();
 
-        if (resultSet.next()) {
+        while (resultSet.next()) {
             OrderItem orderItem = new OrderItem();
             orderItem.setId(resultSet.getLong("id"));
             Phone phone = new Phone();
