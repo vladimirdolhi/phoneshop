@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 
@@ -78,17 +79,23 @@ public class HttpSessionCartService implements CartService {
         recalculateCart();
     }
 
-    private Optional<CartItem> getCartItem(Long id){
-        return cart.getItems().stream().
-                filter(cartItem -> cartItem.getPhone().getId().equals(id)).findAny();
+    @Override
+    public void clearCart() {
+        cart.setItems(new ArrayList<>());
+        recalculateCart();
     }
-
-    private void recalculateCart(){
+    @Override
+    public void recalculateCart(){
         cart.setTotalQuantity(cart.getItems().stream()
                 .map(CartItem::getQuantity).mapToLong(q -> q).sum());
         cart.setTotalCost(BigDecimal.valueOf(cart.getItems().stream()
                 .mapToDouble(item -> item.getQuantity() * item.getPhone().getPrice().doubleValue())
                 .sum()));
+    }
+
+    private Optional<CartItem> getCartItem(Long id){
+        return cart.getItems().stream().
+                filter(cartItem -> cartItem.getPhone().getId().equals(id)).findAny();
     }
 
 }

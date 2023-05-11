@@ -52,6 +52,9 @@ public class JdbcPhoneDao implements PhoneDao {
 
     private final String SELECT_STOCK_BY_PHONE_ID = "select * from stocks where phoneId = ?";
 
+    private final String UPDATE_STOCK = "update stocks set stock = ?, reserved = ? " +
+            "where stocks.phoneId = ?";
+
     private final String COUNT_QUERY = "select count(1) from  ( " + NESTED_QUERY_STR + " )";
 
     @Resource
@@ -106,6 +109,11 @@ public class JdbcPhoneDao implements PhoneDao {
     public Stock getStock(Long id) {
         return jdbcTemplate.queryForObject(SELECT_STOCK_BY_PHONE_ID,  new Object[]{id},
                 new BeanPropertyRowMapper<>(Stock.class));
+    }
+
+    @Override
+    public void updateStock(Stock stock) {
+        jdbcTemplate.update(UPDATE_STOCK, new Object[]{stock.getStock(), stock.getReserved(), stock.getPhone().getId()});
     }
 
     @Override

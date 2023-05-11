@@ -10,5 +10,7 @@ public interface PhoneDao {
                         boolean availability, int offset, int limit);
     Stock getStock(Long id);
 
+    void updateStock(Stock stock);
+
     Integer count(String query, boolean availability);
 }

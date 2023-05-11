@@ -35,23 +35,23 @@
                            id="updateForm"
                            modelAttribute="cartDto"
                            action="${pageContext.request.contextPath}/cart/update">
-                    <c:forEach var="cartItem" items="${cart.items}" varStatus="status">
+                    <c:forEach var="orderItem" items="${cart.items}" varStatus="status">
                         <c:set var="ind" value="${status.index}"/>
                         <tr>
                             <td>
-                                <img src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${cartItem.phone.imageUrl}">
+                                <img src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${orderItem.phone.imageUrl}">
                             </td>
-                            <td>${cartItem.phone.brand}</td>
+                            <td>${orderItem.phone.brand}</td>
                             <td>
-                                <a href="${pageContext.servletContext.contextPath}/products/${cartItem.phone.id}">
-                                        ${cartItem.phone.model}
+                                <a href="${pageContext.servletContext.contextPath}/products/${orderItem.phone.id}">
+                                        ${orderItem.phone.model}
                             </td>
                             <td>
-                                <c:forEach var="color" items="${cartItem.phone.colors}">
+                                <c:forEach var="color" items="${orderItem.phone.colors}">
                                     ${color.code}
                                 </c:forEach>
                             </td>
-                            <td>$ ${cartItem.phone.price}</td>
+                            <td>$ ${orderItem.phone.price}</td>
                             <td>
                                 <form:hidden path="items[${ind}].phoneId"/>
                                 <form:input path="items[${ind}].quantity"/>
@@ -60,7 +60,7 @@
                             </td>
                             <td>
                                 <input form="deleteCartItem"
-                                       formaction="${pageContext.servletContext.contextPath}/cart/delete/${cartItem.phone.id}"
+                                       formaction="${pageContext.servletContext.contextPath}/cart/delete/${orderItem.phone.id}"
                                        type="submit" value="Delete">
                             </td>
                         </tr>
@@ -70,6 +70,10 @@
             <p>
                 <button type="submit" form="updateForm" class="btn btn-success mt-2">Update</button>
             </p>
+
+            <a href="${pageContext.request.contextPath}/order">
+                <input type="button" class="btn btn-outline-primary" value="Place order">
+            </a>
         </c:if>
 
         <c:if test="${cart.items.size() == 0}">
