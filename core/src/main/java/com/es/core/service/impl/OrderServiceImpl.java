@@ -41,8 +41,18 @@ public class OrderServiceImpl implements OrderService {
     private String warningMsg;
 
     @Override
+    public List<Order> findAll() {
+        return orderDao.findAll();
+    }
+
+    @Override
     public Order get(UUID uuid) {
         return orderDao.getBySecureId(uuid).get();
+    }
+
+    @Override
+    public Order get(Long id) {
+        return orderDao.getById(id).get();
     }
 
     @Override
@@ -66,6 +76,11 @@ public class OrderServiceImpl implements OrderService {
     public void placeOrder(Order order) throws OutOfStockException {
         checkOrder(order);
         orderDao.save(order);
+    }
+
+    @Override
+    public void updateStatus(Long id, OrderStatus status) {
+        orderDao.updateStatus(id, status);
     }
 
     private void checkOrder(Order order) {
