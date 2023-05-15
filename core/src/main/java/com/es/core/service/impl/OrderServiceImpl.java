@@ -1,5 +1,6 @@
 package com.es.core.service.impl;
 
+import com.es.core.exception.OrderNotFoundException;
 import com.es.core.model.cart.Cart;
 import com.es.core.model.order.Order;
 import com.es.core.exception.OutOfStockException;
@@ -47,12 +48,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order get(UUID uuid) {
-        return orderDao.getBySecureId(uuid).get();
+        return orderDao.getBySecureId(uuid).orElseThrow(
+                ()-> new OrderNotFoundException("Order with UUID = " + uuid + " not found"));
     }
 
     @Override
     public Order get(Long id) {
-        return orderDao.getById(id).get();
+        return orderDao.getById(id).orElseThrow(
+                ()-> new OrderNotFoundException("Order with id = " + id + " not found"));
     }
 
     @Override

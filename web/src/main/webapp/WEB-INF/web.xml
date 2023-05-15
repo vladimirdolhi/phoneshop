@@ -40,4 +40,25 @@
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
+
+  <error-page>
+    <error-code>404</error-code>
+    <location>/WEB-INF/pages/errors/404.jsp</location>
+  </error-page>
+
+  <error-page>
+    <error-code>403</error-code>
+    <location>/WEB-INF/pages/errors/403.jsp</location>
+  </error-page>
+
+  <error-page>
+    <location>/WEB-INF/pages/errors/productNotFound.jsp</location>
+    <exception-type>com.es.core.exception.ProductNotFoundException</exception-type>
+  </error-page>
+
+  <error-page>
+    <location>/WEB-INF/pages/errors/orderNotFound.jsp</location>
+    <exception-type>com.es.core.exception.OrderNotFoundException</exception-type>
+  </error-page>
+
 </web-app>

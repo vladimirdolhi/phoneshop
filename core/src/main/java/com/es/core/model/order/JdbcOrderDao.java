@@ -49,15 +49,17 @@ public class JdbcOrderDao implements OrderDao {
     public Optional<Order> getById(Long id) {
         Order order = jdbcTemplate.query(FIND_ORDER_BY_ID, orderResultSetExtractor, id);
 
-        List<OrderItem> orderItems = jdbcTemplate.query(FIND_ORDER_ITEMS_BY_ORDER_SECURE_ID,
-                orderItemsResultSetExtractor, order.getSecureId());
+        if (order != null && order.getSecureId() != null){
+            List<OrderItem> orderItems = jdbcTemplate.query(FIND_ORDER_ITEMS_BY_ORDER_SECURE_ID,
+                    orderItemsResultSetExtractor, order.getSecureId());
 
-        orderItems.forEach(orderItem -> orderItem.setPhone(phoneDao.get(orderItem.getPhone().getId())
-                .orElseThrow(() -> new ProductNotFoundException("Phone with id = " + orderItem.getPhone().getId() + " not found"))));
+            orderItems.forEach(orderItem -> orderItem.setPhone(phoneDao.get(orderItem.getPhone().getId())
+                    .orElseThrow(() -> new ProductNotFoundException("Phone with id = " + orderItem.getPhone().getId() + " not found"))));
 
-        order.setOrderItems(orderItems);
+            order.setOrderItems(orderItems);
+        }
 
-        return Optional.of(order);
+        return Optional.ofNullable(order);
     }
 
     @Override
@@ -65,15 +67,17 @@ public class JdbcOrderDao implements OrderDao {
 
         Order order = jdbcTemplate.query(FIND_ORDER_BY_SECURE_ID, orderResultSetExtractor, uuid);
 
-        List<OrderItem> orderItems = jdbcTemplate.query(FIND_ORDER_ITEMS_BY_ORDER_SECURE_ID,
-                orderItemsResultSetExtractor, uuid);
+        if (order != null && order.getSecureId() != null){
+            List<OrderItem> orderItems = jdbcTemplate.query(FIND_ORDER_ITEMS_BY_ORDER_SECURE_ID,
+                    orderItemsResultSetExtractor, uuid);
 
-        orderItems.forEach(orderItem -> orderItem.setPhone(phoneDao.get(orderItem.getPhone().getId())
-                .orElseThrow(() -> new ProductNotFoundException("Phone with id = " + orderItem.getPhone().getId() + " not found"))));
+            orderItems.forEach(orderItem -> orderItem.setPhone(phoneDao.get(orderItem.getPhone().getId())
+                    .orElseThrow(() -> new ProductNotFoundException("Phone with id = " + orderItem.getPhone().getId() + " not found"))));
 
-        order.setOrderItems(orderItems);
+            order.setOrderItems(orderItems);
+        }
 
-        return Optional.of(order);
+        return Optional.ofNullable(order);
     }
 
     @Override

@@ -54,7 +54,7 @@
                             <td>$ ${orderItem.phone.price}</td>
                             <td>
                                 <form:hidden path="items[${ind}].phoneId"/>
-                                <form:input path="items[${ind}].quantity"/>
+                                <form:input type="number" path="items[${ind}].quantity" value="${items[status.index].quantity}"/>
                                 <c:set var="id">items[${ind}].phoneId</c:set>
                                 <p style="color: red">${errors[id]}</p>
                             </td>
