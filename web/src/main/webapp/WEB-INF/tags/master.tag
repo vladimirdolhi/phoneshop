@@ -31,6 +31,9 @@
     </nav>
     <nav class="navbar navbar-light bg-light">
       <h1 class="display-4">Phonify</h1>
+      <a href="${pageContext.request.contextPath}/quickAdd">
+        <input type="button" class="btn btn-info" value="Quick order">
+      </a>
       <s:authorize access="!hasRole('ROLE_ADMIN')">
         <form class="form-inline my-2 my-lg-0" action="${pageContext.request.contextPath}/cart">
           <button class="btn btn-outline-info my-2 my-sm-0" type="submit" id="minicart">
