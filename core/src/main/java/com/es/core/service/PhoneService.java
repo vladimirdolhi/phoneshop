@@ -10,6 +10,7 @@ import java.util.List;
 public interface PhoneService {
 
     Phone get(Long id);
+    Phone getByModel(String model);
 
     void save(Phone phone);
 

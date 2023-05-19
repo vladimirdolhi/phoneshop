@@ -20,6 +20,11 @@ public class PhoneServiceImpl implements PhoneService {
     }
 
     @Override
+    public Phone getByModel(String model) {
+        return phoneDao.get(model).orElseThrow(() -> new ProductNotFoundException("Phone model " + model + " not found"));
+    }
+
+    @Override
     public void save(Phone phone) {
         phoneDao.save(phone);
     }

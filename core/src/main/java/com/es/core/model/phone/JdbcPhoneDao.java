@@ -36,9 +36,14 @@ public class JdbcPhoneDao implements PhoneDao {
                     " left join colors on phone2color.colorId = colors.id";
 
     private final String SELECT_PHONE_BY_ID = "select * from phones where id = ?";
+    private final String SELECT_PHONE_BY_MODEL = "select * from phones where model = ?";
 
     private final String SELECT_PHONE_WITH_CLR_BY_ID = "select phone.*, colors.id as colorId, colors.code as colorCode from " +
             "(" + SELECT_PHONE_BY_ID + ") as phone left join phone2color " +
+            "on phone.id = phone2color.phoneId" +
+            " left join colors on phone2color.colorId = colors.id";
+    private final String SELECT_PHONE_WITH_CLR_BY_MODEL = "select phone.*, colors.id as colorId, colors.code as colorCode from " +
+            "(" + SELECT_PHONE_BY_MODEL + ") as phone left join phone2color " +
             "on phone.id = phone2color.phoneId" +
             " left join colors on phone2color.colorId = colors.id";
 
@@ -65,6 +70,13 @@ public class JdbcPhoneDao implements PhoneDao {
                         new PhoneResultSetExtractor())
                 .stream().findAny();
 
+    }
+
+    @Override
+    public Optional<Phone> get(String model) {
+        return jdbcTemplate.query(SELECT_PHONE_WITH_CLR_BY_MODEL, new Object[]{model},
+                        new PhoneResultSetExtractor())
+                .stream().findAny();
     }
 
     public void save(final Phone phone) {
