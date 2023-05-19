@@ -9,14 +9,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -33,25 +33,28 @@ public class CartPageController {
     public String getCart(Model model) {
         Cart cart = cartService.getCart();
         model.addAttribute("cart", cart);
-        model.addAttribute("cartDto", convertToCartDto(cart));
+        if (!model.containsAttribute("cartDto")) {
+            model.addAttribute("cartDto", convertToCartDto(cart));
+        }
         return "cart";
     }
 
     @PostMapping("/update")
-    public String updateCart(CartDto cartDto, BindingResult bindingResult,
+    public String updateCart(@Valid @ModelAttribute("cartDto") CartDto cartDto, BindingResult bindingResult,
                              RedirectAttributes redirectAttributes) {
+        List<CartItemDto> items = new ArrayList<>(cartDto.getItems());
         updateCartDtoValidator.validate(cartDto, bindingResult);
-        Map<Long, Long> items = new HashMap<>(cartDto.getItems().stream()
+        Map<Long, Long> validItems = new HashMap<>(cartDto.getItems().stream()
                 .collect(Collectors.toMap(CartItemDto::getPhoneId,
                         CartItemDto::getQuantity)));
-        cartService.update(items);
-
+        cartService.update(validItems);
+        cartDto.setItems(items);
         if(bindingResult.hasErrors()){
             Map<String, String> errors = bindingResult.getFieldErrors().stream()
                     .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
             redirectAttributes.addFlashAttribute("errors", errors);
         }
-
+        redirectAttributes.addFlashAttribute("cartDto", cartDto);
         return "redirect:/cart";
     }
 

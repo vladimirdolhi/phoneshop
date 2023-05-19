@@ -62,7 +62,7 @@ create table orders (
   subtotal FLOAT NOT NULL,
   deliveryPrice FLOAT NOT NULL,
   totalPrice FLOAT NOT NULL,
-  creationDay TIMESTAMP NOT NULL,
+  creationDate TIMESTAMP NOT NULL,
   firstName VARCHAR(50) NOT NULL,
   lastName VARCHAR(50) NOT NULL,
   deliveryAddress VARCHAR(100) NOT NULL,

@@ -14,7 +14,7 @@
             </form>
         </div>
     </div>
-    Found <c:out value="${phones.size()}"/> phones.
+    Found <c:out value="${itemsTotalCount}"/> phones.
     <table class="table">
         <thead>
         <tr>

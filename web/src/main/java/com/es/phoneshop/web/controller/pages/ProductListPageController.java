@@ -36,7 +36,10 @@ public class ProductListPageController {
         model.addAttribute("phones", phoneService.findAll(query, sort, order, true,
                 PRODUCTS_PER_PAGE * (pageNumber - 1), PRODUCTS_PER_PAGE));
 
-        int pagesTotal = (int) Math.ceil(phoneService.count(query, sort, order, true,-1, -1) / (float) PRODUCTS_PER_PAGE);
+        int itemsTotal = phoneService.count(query, sort, order, true, -1, -1);
+        int pagesTotal = (int) Math.ceil(itemsTotal / (float) PRODUCTS_PER_PAGE);
+
+        model.addAttribute("itemsTotalCount", itemsTotal);
         model.addAttribute("pageNumber", pageNumber);
         model.addAttribute("count", pagesTotal);
         model.addAttribute("cart", cartService.getCart());

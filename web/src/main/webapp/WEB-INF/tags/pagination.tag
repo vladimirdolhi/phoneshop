@@ -10,7 +10,13 @@
 <c:set var="r" value="${l / 2}"/>
 <c:set var="t" value="${totalPageCount}"/>
 
+<c:choose>
+    <c:when test="${l > totalPageCount * 1}">
+        <c:set var="l" value="${totalPageCount / 2}"/>
+    </c:when>
+</c:choose>
 <c:set var="begin" value="${((p - r) > 0 ? ((p - r) < (t - l + 1) ? (p - r) : (t - l)) : 0) + 1}"/>
+
 <c:set var="end" value="${(p + r) < t ? ((p + r) > l ? (p + r) : l) : t}"/>
 
 <nav aria-label="...">

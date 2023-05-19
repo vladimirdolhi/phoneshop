@@ -1,8 +1,9 @@
 package com.es.core.model.order;
 
 import com.es.core.exception.ProductNotFoundException;
-import com.es.core.model.phone.PhoneDao;
+import com.es.core.model.phone.*;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -16,16 +17,22 @@ import java.util.UUID;
 @Component
 public class JdbcOrderDao implements OrderDao {
 
-    private static final String FIND_ORDER_BY_ID = "select * from orders where secureId = ?";
+    private static final String FIND_ORDER_BY_SECURE_ID = "select * from orders where secureId = ?";
+    private static final String FIND_ORDER_BY_ID = "select * from orders where id = ?";
+    private static final String FIND_ORDER_ITEMS_BY_ORDER_SECURE_ID = "select * from orders_items where orderId = ?";
+    private static final String FIND_ORDER_ITEMS_BY_ORDER_ID = "select * from orders_items where id = ?";
 
-    private static final String FIND_ORDER_ITEMS_BY_ORDER_ID = "select * from orders_items where orderId = ?";
-
-    private static final String INSERT_ORDER = "insert into orders (secureId, subtotal, deliveryPrice, totalPrice, creationDay," +
+    private static final String INSERT_ORDER = "insert into orders (secureId, subtotal, deliveryPrice, totalPrice, creationDate," +
             "firstName, lastName, deliveryAddress, contactPhoneNo, status, additionalInfo) " +
             "values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
+    private static final String FIND_ALL_ORDERS = "select * from orders order by creationDate desc";
+
     private static final String INSERT_ORDER_ITEM = "insert into orders_items (orderId, phoneId, quantity) " +
             "VALUES (?, ?, ?)";
+
+    private static final String UPDATE_ORDER_STATUS = "update orders set status = ? where id = ?";
+
 
     @Resource
     private JdbcTemplate jdbcTemplate;
@@ -39,19 +46,38 @@ public class JdbcOrderDao implements OrderDao {
     private OrderItemsResultSetExtractor orderItemsResultSetExtractor;
 
     @Override
+    public Optional<Order> getById(Long id) {
+        Order order = jdbcTemplate.query(FIND_ORDER_BY_ID, orderResultSetExtractor, id);
+
+        if (order != null && order.getSecureId() != null){
+            List<OrderItem> orderItems = jdbcTemplate.query(FIND_ORDER_ITEMS_BY_ORDER_SECURE_ID,
+                    orderItemsResultSetExtractor, order.getSecureId());
+
+            orderItems.forEach(orderItem -> orderItem.setPhone(phoneDao.get(orderItem.getPhone().getId())
+                    .orElseThrow(() -> new ProductNotFoundException("Phone with id = " + orderItem.getPhone().getId() + " not found"))));
+
+            order.setOrderItems(orderItems);
+        }
+
+        return Optional.ofNullable(order);
+    }
+
+    @Override
     public Optional<Order> getBySecureId(UUID uuid) {
 
-        Order order = jdbcTemplate.query(FIND_ORDER_BY_ID, orderResultSetExtractor, uuid);
+        Order order = jdbcTemplate.query(FIND_ORDER_BY_SECURE_ID, orderResultSetExtractor, uuid);
 
-        List<OrderItem> orderItems = jdbcTemplate.query(FIND_ORDER_ITEMS_BY_ORDER_ID,
-                orderItemsResultSetExtractor, uuid);
+        if (order != null && order.getSecureId() != null){
+            List<OrderItem> orderItems = jdbcTemplate.query(FIND_ORDER_ITEMS_BY_ORDER_SECURE_ID,
+                    orderItemsResultSetExtractor, uuid);
 
-        orderItems.forEach(orderItem -> orderItem.setPhone(phoneDao.get(orderItem.getPhone().getId())
-                .orElseThrow(() -> new ProductNotFoundException("Phone with id = " + orderItem.getPhone().getId() + " not found"))));
+            orderItems.forEach(orderItem -> orderItem.setPhone(phoneDao.get(orderItem.getPhone().getId())
+                    .orElseThrow(() -> new ProductNotFoundException("Phone with id = " + orderItem.getPhone().getId() + " not found"))));
 
-        order.setOrderItems(orderItems);
+            order.setOrderItems(orderItems);
+        }
 
-        return Optional.of(order);
+        return Optional.ofNullable(order);
     }
 
     @Override
@@ -81,4 +107,15 @@ public class JdbcOrderDao implements OrderDao {
 
         );
     }
+
+    @Override
+    public void updateStatus(Long id, OrderStatus orderStatus) {
+        jdbcTemplate.update(UPDATE_ORDER_STATUS, orderStatus.name(), id);
+    }
+
+    @Override
+    public List<Order> findAll() {
+        return jdbcTemplate.query(FIND_ALL_ORDERS, new BeanPropertyRowMapper<>(Order.class));
+    }
+
 }
